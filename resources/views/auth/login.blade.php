@@ -23,7 +23,9 @@
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #1a4731 0%, #2d6a4f 100%);
+            background:
+                linear-gradient(to top, rgba(20,55,35,0.78) 0%, rgba(26,71,49,0.60) 60%, rgba(230,240,234,1) 150%),
+                url('https://cdn.pixabay.com/photo/2024/04/20/11/47/ai-generated-8708404_1280.jpg') center/cover no-repeat;
             min-height: 100vh;
             display: flex;
             align-items: center;
