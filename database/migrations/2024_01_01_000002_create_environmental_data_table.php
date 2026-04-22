@@ -1,4 +1,3 @@
-// database/migrations/2024_01_01_000002_create_environmental_data_table.php
 <?php
 
 use Illuminate\Database\Migrations\Migration;

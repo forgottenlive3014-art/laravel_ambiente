@@ -12,40 +12,7 @@ class RegisterController extends Controller
 {
     public function showRegisterForm()
     {
-        $municipios = $this->getMunicipiosElSalvador();
-        return view('auth.register', compact('municipios'));
-    }
-
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'municipio' => ['required', 'string'],
-        ]);
-    }
-
-    public function register(Request $request)
-    {
-        $this->validator($request->all())->validate();
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'municipio' => $request->municipio,
-            'role' => 'user'
-        ]);
-
-        auth()->login($user);
-
-        return redirect()->route('dashboard');
-    }
-
-    private function getMunicipiosElSalvador()
-    {
-        return [
+        $municipios = [
             'San Salvador' => ['San Salvador', 'Mejicanos', 'Soyapango', 'Santa Tecla', 'Ilopango', 'Apopa'],
             'Santa Ana' => ['Santa Ana', 'Metapán', 'Chalchuapa', 'El Congo'],
             'San Miguel' => ['San Miguel', 'Chapeltique', 'Moncagua', 'Ciudad Barrios'],
@@ -56,10 +23,32 @@ class RegisterController extends Controller
             'Cuscatlán' => ['Cojutepeque', 'Suchitoto', 'San Rafael Cedros'],
             'La Unión' => ['La Unión', 'Conchagua', 'Santa Rosa de Lima'],
             'Morazán' => ['San Francisco Gotera', 'Torola', 'Jocoro'],
-            'Ahuachapán' => ['Ahuachapán', 'Atiquizaya', 'Tacuba'],
-            'Chalatenango' => ['Chalatenango', 'Nueva Concepción', 'La Palma'],
-            'Cabañas' => ['Sensuntepeque', 'Ilobasco', 'Victoria'],
-            'San Vicente' => ['San Vicente', 'Apastepeque', 'San Sebastián']
         ];
+        return view('auth.register', compact('municipios'));
+    }
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'municipio' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'municipio' => $request->municipio,
+            'role' => 'user'
+        ]);
+
+        auth()->login($user);
+        return redirect()->route('dashboard');
     }
 }

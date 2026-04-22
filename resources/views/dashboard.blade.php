@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Panel Ambiental')
+@section('title', 'Dashboard Ambiental - El Salvador')
 
 @section('content')
 <div class="dash-hero">
     <div class="hero-badge">🌿 Tu portal ambiental</div>
     <h1>Información que <em>transforma</em> El Salvador</h1>
-    <p>Explora datos, estadísticas y guías sobre el medioambiente en nuestro país. El conocimiento es el primer paso para el cambio.</p>
+    <p>Explora datos, estadísticas y guías sobre el medioambiente en nuestro país.</p>
 </div>
 
 <div class="search-wrap">
     <div class="search-box">
         <span>🔍</span>
-        <input type="text" placeholder="Busca sobre clima, biodiversidad, reciclaje..." id="searchInput" />
+        <input type="text" id="searchInput" placeholder="Busca por departamento, temperatura, recomendaciones...">
         <button onclick="buscarArticulo()">Buscar</button>
     </div>
 </div>
@@ -25,9 +25,6 @@
         <div class="pill" data-categoria="sostenibilidad">♻️ Sostenibilidad</div>
         <div class="pill" data-categoria="biodiversidad">🐾 Biodiversidad</div>
         <div class="pill" data-categoria="agua">💧 Agua & Océanos</div>
-        <div class="pill" data-categoria="energia">⚡ Energías Renovables</div>
-        <div class="pill" data-categoria="ciudades">🏙️ Ciudades Verdes</div>
-        <div class="pill" data-categoria="agricultura">🌱 Agricultura</div>
     </div>
 </div>
 
@@ -36,14 +33,13 @@
         <h2>📰 Artículo Destacado</h2>
         <a href="#">Ver todos →</a>
     </div>
-
     <div class="featured-card">
         <div class="featured-img"></div>
         <div class="featured-body">
             <span class="tag">🌡️ Cambio Climático</span>
             <h3>El Salvador: Impactos del cambio climático en la región</h3>
             <div class="meta">
-                <span>📅 15 Enero, 2026</span>
+                <span>📅 {{ date('d M, Y') }}</span>
                 <span>⏱️ 8 min lectura</span>
                 <span>👁️ 12.4K vistas</span>
             </div>
@@ -53,84 +49,74 @@
     </div>
 </div>
 
-<div class="section-wrap" style="margin-top:48px">
+<!-- ===== TABLA DE DATOS AMBIENTALES (para TODOS los usuarios) ===== -->
+<div class="section-wrap">
     <div class="section-header">
-        <h2>🌿 Últimas Noticias Ambientales</h2>
-        <a href="#">Ver todas →</a>
+        <h2>📊 Datos Ambientales por Departamento</h2>
+        @if(Auth::user()->role === 'admin')
+            <a href="{{ route('admin.environmental.index') }}">➕ Administrar Datos</a>
+        @endif
     </div>
 
-    <div class="articles-grid" id="articlesGrid">
-        <div class="article-card" data-categoria="sostenibilidad">
-            <div class="article-img" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600')"></div>
-            <div class="article-body">
-                <span class="tag">♻️ Sostenibilidad</span>
-                <h4>El Salvador avanza en energías renovables</h4>
-                <p>El país ha logrado que el 65% de su matriz energética provenga de fuentes renovables como geotermia, hidroeléctrica y solar.</p>
-                <div class="article-footer">
-                    <span>📅 10 Abr, 2026</span>
-                    <span>⏱️ 5 min</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="article-card" data-categoria="biodiversidad">
-            <div class="article-img" style="background-image: url('https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600')"></div>
-            <div class="article-body">
-                <span class="tag">🐾 Biodiversidad</span>
-                <h4>Conservación del jaguar en El Salvador</h4>
-                <p>Proyectos de conservación buscan proteger al felino más grande de América, en peligro de extinción en el país.</p>
-                <div class="article-footer">
-                    <span>📅 7 Abr, 2026</span>
-                    <span>⏱️ 4 min</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="article-card" data-categoria="agua">
-            <div class="article-img" style="background-image: url('https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=600')"></div>
-            <div class="article-body">
-                <span class="tag">💧 Agua</span>
-                <h4>Protección del Lago de Ilopango</h4>
-                <p>Iniciativas para limpiar y conservar uno de los pulmones acuáticos más importantes de El Salvador.</p>
-                <div class="article-footer">
-                    <span>📅 3 Abr, 2026</span>
-                    <span>⏱️ 6 min</span>
-                </div>
-            </div>
-        </div>
+    <div class="table-responsive" style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.10);">
+        <table class="table table-bordered table-hover" style="width: 100%; border-collapse: collapse;">
+            <thead style="background-color: #2d6a4f; color: white;">
+                <tr>
+                    <th style="padding: 12px;">ID</th>
+                    <th style="padding: 12px;">Departamento</th>
+                    <th style="padding: 12px;">Municipio</th>
+                    <th style="padding: 12px;">Temperatura</th>
+                    <th style="padding: 12px;">Humedad</th>
+                    <th style="padding: 12px;">Calidad del Aire</th>
+                    <th style="padding: 12px;">CO₂ (ppm)</th>
+                    <th style="padding: 12px;">Recomendaciones</th>
+                    <th style="padding: 12px;">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($environmentalData as $data)
+                <tr style="border-bottom: 1px solid #e8f5ec;">
+                    <td style="padding: 10px;">{{ $data->id }}</td>
+                    <td style="padding: 10px;"><strong>{{ $data->department }}</strong></td>
+                    <td style="padding: 10px;">{{ $data->municipality }}</td>
+                    <td style="padding: 10px;">{{ $data->temperature }}°C</td>
+                    <td style="padding: 10px;">{{ $data->humidity }}%</td>
+                    <td style="padding: 10px;">
+                        <span class="badge" style="background: 
+                            @if($data->air_quality == 'buena') #2d6a4f
+                            @elseif($data->air_quality == 'regular') #f4a261
+                            @else #e63946
+                            @endif; color: white; padding: 5px 12px; border-radius: 20px;">
+                            {{ ucfirst($data->air_quality) }}
+                        </span>
+                    </td>
+                    <td style="padding: 10px;">{{ $data->co2_levels }}</td>
+                    <td style="padding: 10px;">{{ $data->recommendations }}</td>
+                    <td style="padding: 10px;">{{ $data->record_date }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 40px;">
+                        ⚠️ No hay datos ambientales registrados.
+                        @if(Auth::user()->role === 'admin')
+                            <br><a href="{{ route('admin.environmental.create') }}" class="btn btn-success mt-2">➕ Agregar primer dato</a>
+                        @endif
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
 <div class="stats-section" id="datos">
     <div class="inner">
-        <span class="section-label">📊 El planeta en números</span>
-        <h2>Los datos que debemos conocer en El Salvador</h2>
-
+        <h2>📊 Datos ambientales de El Salvador</h2>
         <div class="data-grid">
-            <div class="data-card">
-                <span class="icon">🌡️</span>
-                <span class="number">+1.8°C</span>
-                <span class="label">Aumento temperatura en El Salvador</span>
-                <span class="trend">↑ vs siglo pasado</span>
-            </div>
-            <div class="data-card">
-                <span class="icon">🌊</span>
-                <span class="number">85%</span>
-                <span class="label">Ríos contaminados</span>
-                <span class="trend">↑ alerta</span>
-            </div>
-            <div class="data-card">
-                <span class="icon">🌲</span>
-                <span class="number">35%</span>
-                <span class="label">Pérdida de cobertura forestal</span>
-                <span class="trend">↑ preocupante</span>
-            </div>
-            <div class="data-card">
-                <span class="icon">♻️</span>
-                <span class="number">65%</span>
-                <span class="label">Energía renovable</span>
-                <span class="trend good">↑ líder en CA</span>
-            </div>
+            <div class="data-card"><span class="icon">🌡️</span><span class="number">{{ $highlights['promedio_temperatura'] }}°C</span><span class="label">Temperatura promedio</span></div>
+            <div class="data-card"><span class="icon">💧</span><span class="number">{{ $highlights['promedio_humedad'] }}%</span><span class="label">Humedad promedio</span></div>
+            <div class="data-card"><span class="icon">🌫️</span><span class="number">{{ $highlights['calidad_aire_general'] }}</span><span class="label">Calidad del aire</span></div>
+            <div class="data-card"><span class="icon">⚠️</span><span class="number">{{ $highlights['departamento_mas_afectado'] }}</span><span class="label">Zona crítica</span></div>
         </div>
     </div>
 </div>
@@ -140,36 +126,16 @@
         <h2>💡 Acciones que hacen la diferencia</h2>
         <a href="#">Ver guías completas →</a>
     </div>
-
     <div class="tips-grid">
+        @foreach($recommendations as $title => $description)
         <div class="tip-card">
-            <div class="tip-icon">♻️</div>
+            <div class="tip-icon">🌱</div>
             <div class="tip-content">
-                <h4>Recicla correctamente en tu municipio</h4>
-                <p>Infórmate sobre los días y lugares de recolección de residuos reciclables en {{ Auth::user()->municipio ?? 'tu municipio' }}.</p>
+                <h4>{{ $title }}</h4>
+                <p>{{ $description }}</p>
             </div>
         </div>
-        <div class="tip-card">
-            <div class="tip-icon">💡</div>
-            <div class="tip-content">
-                <h4>Ahorra energía en casa</h4>
-                <p>Cambia a focos LED y desconecta electrodomésticos que no uses. Puedes ahorrar hasta 30% en tu factura eléctrica.</p>
-            </div>
-        </div>
-        <div class="tip-card">
-            <div class="tip-icon">🚶</div>
-            <div class="tip-content">
-                <h4>Movilidad sostenible</h4>
-                <p>Usa bicicleta o transporte público. En San Salvador hay más de 50 km de ciclovías disponibles.</p>
-            </div>
-        </div>
-        <div class="tip-card">
-            <div class="tip-icon">💧</div>
-            <div class="tip-content">
-                <h4>Cuida el agua</h4>
-                <p>El Salvador enfrenta estrés hídrico. Repara fugas y no dejes correr el agua innecesariamente.</p>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
 
@@ -185,39 +151,37 @@
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
+<div class="container mt-4 mb-4">
+    <div class="alert alert-success">
+        <strong>👋 ¡Bienvenido, {{ Auth::user()->name }}!</strong><br>
+        📍 Tu municipio: {{ Auth::user()->municipio ?? 'No especificado' }} | 
+        👑 Rol: {{ Auth::user()->role == 'admin' ? 'Administrador' : 'Usuario' }} | 
+        📅 Fecha de ingreso: {{ Auth::user()->created_at->format('d/m/Y') }}
+    </div>
+</div>
+
 <script>
-    function buscarArticulo() {
-        const busqueda = document.getElementById('searchInput').value.toLowerCase();
-        const articulos = document.querySelectorAll('.article-card');
-        
-        articulos.forEach(articulo => {
-            const titulo = articulo.querySelector('h4').textContent.toLowerCase();
-            const descripcion = articulo.querySelector('p').textContent.toLowerCase();
-            
-            if (titulo.includes(busqueda) || descripcion.includes(busqueda) || busqueda === '') {
-                articulo.style.display = 'block';
-            } else {
-                articulo.style.display = 'none';
-            }
-        });
-    }
-
-    document.querySelectorAll('.pill').forEach(pill => {
-        pill.addEventListener('click', function() {
-            const categoria = this.dataset.categoria;
-            const articulos = document.querySelectorAll('.article-card');
-            
-            articulos.forEach(articulo => {
-                if (categoria === 'todo' || articulo.dataset.categoria === categoria) {
-                    articulo.style.display = 'block';
-                } else {
-                    articulo.style.display = 'none';
-                }
-            });
-        });
+function buscarArticulo() {
+    let busqueda = document.getElementById('searchInput').value.toLowerCase();
+    let tabla = document.querySelector('.table-responsive table tbody');
+    let filas = tabla.querySelectorAll('tr');
+    
+    filas.forEach(fila => {
+        let texto = fila.innerText.toLowerCase();
+        if (texto.includes(busqueda) || busqueda === '') {
+            fila.style.display = '';
+        } else {
+            fila.style.display = 'none';
+        }
     });
+}
+
+document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
 </script>
-@endpush
+@endsection

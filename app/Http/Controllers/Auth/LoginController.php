@@ -27,16 +27,12 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->withErrors([
-                'email' => 'Credenciales incorrectas.'
-            ])->onlyInput('email');
+            return back()->withErrors(['email' => 'Credenciales incorrectas']);
         }
 
         if ($user->isBlocked()) {
-            $tiempoRestante = $user->getBlockedTimeRemaining();
-            return back()->withErrors([
-                'email' => "Usuario bloqueado. Intente nuevamente en {$tiempoRestante}"
-            ]);
+            $minutos = now()->diffInMinutes($user->blocked_until);
+            return back()->withErrors(['email' => "Usuario bloqueado. Intente en {$minutos} minutos"]);
         }
 
         if (Auth::attempt($request->only('email', 'password'), $request->remember)) {
@@ -47,15 +43,11 @@ class LoginController extends Controller
             }
             
             $request->session()->regenerate();
-            
             return redirect()->intended(route('dashboard'));
         }
 
         $user->incrementLoginAttempts();
-        
-        return back()->withErrors([
-            'email' => 'Credenciales incorrectas.'
-        ])->onlyInput('email');
+        return back()->withErrors(['email' => 'Credenciales incorrectas']);
     }
 
     public function logout(Request $request)
@@ -63,9 +55,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
         Cookie::queue(Cookie::forget('user_email'));
-        
         return redirect('/');
     }
 }
