@@ -14,6 +14,6 @@ class AdminMiddleware
             return $next($request);
         }
         
-        return redirect('/dashboard')->with('error', 'No tienes acceso a esta sección');
+        return redirect('/dashboard')->with('error', 'No tienes permisos de administrador');
     }
 }

@@ -8,7 +8,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h4 class="mb-0">📋 Detalle del Dato Ambiental</h4>
+                    <h4 class="mb-0"> Detalle del Dato Ambiental</h4>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered">

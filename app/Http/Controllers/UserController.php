@@ -14,8 +14,8 @@ class UserController extends Controller
         if (Auth::user()->role !== 'admin') {
             return redirect('/dashboard')->with('error', 'No tienes permisos');
         }
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
+        $usuarios = User::all();
+        return view('admin.users.index', compact('usuarios'));
     }
 
     public function create()
@@ -34,10 +34,10 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,user',
-            'municipio' => 'nullable|string'
+            'municipio' => 'nullable|string|max:255'
         ]);
 
         User::create([
@@ -48,7 +48,8 @@ class UserController extends Controller
             'municipio' => $request->municipio
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Usuario creado exitosamente');
     }
 
     public function edit($id)
@@ -56,8 +57,8 @@ class UserController extends Controller
         if (Auth::user()->role !== 'admin') {
             return redirect('/dashboard')->with('error', 'No tienes permisos');
         }
-        $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
+        $usuario = User::findOrFail($id);
+        return view('admin.users.edit', compact('usuario'));
     }
 
     public function update(Request $request, $id)
@@ -66,16 +67,17 @@ class UserController extends Controller
             return redirect('/dashboard')->with('error', 'No tienes permisos');
         }
 
-        $user = User::findOrFail($id);
+        $usuario = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'role' => 'required|in:admin,user',
-            'municipio' => 'nullable|string'
+            'municipio' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:8'
         ]);
 
-        $user->update([
+        $usuario->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
@@ -83,10 +85,11 @@ class UserController extends Controller
         ]);
 
         if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($request->password)]);
+            $usuario->update(['password' => Hash::make($request->password)]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado exitosamente');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Usuario actualizado exitosamente');
     }
 
     public function destroy($id)
@@ -95,13 +98,16 @@ class UserController extends Controller
             return redirect('/dashboard')->with('error', 'No tienes permisos');
         }
 
-        $user = User::findOrFail($id);
-        
-        if ($user->id === Auth::id()) {
-            return redirect()->route('admin.users.index')->with('error', 'No puedes eliminar tu propio usuario');
+        $usuario = User::findOrFail($id);
+
+        if ($usuario->id === Auth::id()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No puedes eliminar tu propio usuario');
         }
 
-        $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado exitosamente');
+        $usuario->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Usuario eliminado exitosamente');
     }
 }

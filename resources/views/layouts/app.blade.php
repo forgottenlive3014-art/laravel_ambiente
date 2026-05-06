@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>🌿 EcoMundo - @yield('title', 'Ambiente El Salvador')</title>
+    <title> EcoMundo - @yield('title', 'Ambiente El Salvador')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/estilo.css') }}" rel="stylesheet">
     <style>
@@ -52,14 +52,14 @@
         <li><a href="{{ route('dashboard') }}">Inicio</a></li>
         @auth
     @if(Auth::user()->role === 'admin')
-        <li><a href="{{ route('admin.environmental.index') }}">📊 Datos Ambientales</a></li>
-        <li><a href="{{ route('admin.users.index') }}">👥 Usuarios</a></li>
+        <li><a href="{{ route('admin.environmental.index') }}"> Datos Ambientales</a></li>
+        <li><a href="{{ route('admin.users.index') }}"> Usuarios</a></li>
     @endif
-    <li><div class="user-badge">👤 {{ Auth::user()->name }}</div></li>
+    <li><div class="user-badge"> {{ Auth::user()->name }}</div></li>
     <li>
         <form method="POST" action="{{ route('logout') }}" style="display:inline;">
             @csrf
-            <button type="submit" style="background:none; border:none; color:white; cursor:pointer; padding:8px 20px;">🚪 Cerrar Sesión</button>
+            <button type="submit" style="background:none; border:none; color:white; cursor:pointer; padding:8px 20px;"> Cerrar Sesión</button>
         </form>
     </li>
 @else
@@ -78,7 +78,7 @@
     @yield('content')
 </main>
 <footer>
-    <p>🌿 <strong>EcoMundo</strong> · Juntos por un planeta más verde · {{ date('Y') }}</p>
+    <p> <strong>EcoMundo</strong> · Juntos por un planeta más verde · {{ date('Y') }}</p>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @stack('scripts')
