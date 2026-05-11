@@ -8,46 +8,112 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/estilo.css') }}" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0faf4; }
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5%; height: 68px;
-            background: rgba(26, 71, 49, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #f0faf4;
+    }
+
+    main {
+        padding-top: 68px;
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        height: 68px;
+        background: rgba(26, 71, 49, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+    }
+
+    .nav-logo span {
+        color: #74c69d;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 10px;
+        list-style: none;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-links a.btn-nav {
+        background: #52b788;
+        color: #1a4731;
+        font-weight: 700;
+    }
+
+    .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.88rem;
+    }
+
+    footer {
+        background: #1a4731;
+        color: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        padding: 28px 5%;
+        margin-top: 60px;
+    }
+
+    footer strong {
+        color: #74c69d;
+    }
+
+    @media (max-width: 640px) {
+        .nav-links {
+            display: none;
         }
-        .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 700; color: white; text-decoration: none; }
-        .nav-logo span { color: #74c69d; }
-        .nav-links { display: flex; gap: 10px; list-style: none; align-items: center; }
-        .nav-links a { color: white; text-decoration: none; padding: 8px 20px; border-radius: 50px; font-size: 0.95rem; transition: 0.3s; }
-        .nav-links a:hover { background: rgba(255,255,255,0.12); }
-        .nav-links a.btn-nav { background: #52b788; color: #1a4731; font-weight: 700; }
-        .user-badge {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 6px 16px; border-radius: 50px;
-            font-size: 0.88rem;
-        }
-        footer {
-            background: #1a4731;
-            color: rgba(255,255,255,0.7);
-            text-align: center;
-            padding: 28px 5%;
-            margin-top: 60px;
-        }
-        footer strong { color: #74c69d; }
-        main { padding-top: 68px; }
-        @media (max-width: 640px) { .nav-links { display: none; } }
-    </style>
+    }
+</style>
     @stack('styles')
 </head>
 <body>
 <nav>
-    <a href="{{ route('dashboard') }}" class="nav-logo">🌿 <span>Eco</span>Mundo</a>
+    <a href="{{ route('dashboard') }}" class="nav-logo"><span>Eco</span>Mundo</a>
     <ul class="nav-links">
         <li><a href="{{ route('dashboard') }}">Inicio</a></li>
         @auth
